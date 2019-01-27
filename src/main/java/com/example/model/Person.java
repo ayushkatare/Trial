@@ -35,6 +35,9 @@ public class Person {
         this.age = Age;
         this.id = Id;
     }
+    public Person(){
+        
+    }
 
 
     @Override

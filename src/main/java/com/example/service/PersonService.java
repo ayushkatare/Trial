@@ -1,6 +1,9 @@
 package com.example.service;
 
 import com.example.model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -13,32 +16,22 @@ import java.util.List;
 @Repository
 public class PersonService {
 
-    private static List<Person> persons = new ArrayList<>();
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
-    static {
-        //Initialize Data
 
-        Person ranga = new Person("Student1", 24,
-                1);
-
-        Person satish = new Person("Student2", 25,
-                2);
-
-        persons.add(ranga);
-        persons.add(satish);
-    }
 
     public List<Person> retrieveAllStudents() {
-        return persons;
+        String sql = "select * from Persons ";
+        List<Person>list =  jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper(Person.class));
+        return list;
     }
 
     public Person retrieveStudent(int personId) {
-        for (Person person : persons) {
-            if (person.getId()==personId) {
-                return person;
-            }
-        }
-        return null;
+        String sql = "select * from Persons where id = ?";
+        Person ps = jdbcTemplate.queryForObject(sql,new Object[]{personId},new BeanPropertyRowMapper<>(Person.class));
+        return ps;
     }
 
 }
